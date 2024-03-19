@@ -4,7 +4,6 @@ import com.example.searchtypeaheaddesign.repository.QueryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.swing.tree.TreeNode;
 import java.util.*;
 
 @Component
@@ -32,8 +31,7 @@ public class SuggestionTrie implements SuggestionDataStructure{
 
     public void insert(String query, int index, int frequency, TrieNode current) {
 
-        if(index == query.length()-1){
-            current.setEndOfWord(true);
+        if(index == query.length()){
             Set<Suggestion> suggestions = new HashSet<>(current.getTopSuggestions());
             suggestions.add(new Suggestion(query, frequency));
             updateTopSuggestions(suggestions, current);
@@ -46,6 +44,9 @@ public class SuggestionTrie implements SuggestionDataStructure{
             current.getChildren()[charIndex] = new TrieNode();
         }
         insert(query, index+1, frequency, current.getChildren()[charIndex]);
+        if(index == query.length()-1){
+            current.setEndOfWord(true);
+        }
 
         Set<Suggestion> suggestions = new HashSet<>(current.getTopSuggestions());
         for(int i = 0;i<26;i++){
